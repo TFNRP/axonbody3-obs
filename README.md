@@ -11,8 +11,6 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
-- [Credits](#credits)
-- [Screenshots](#screenshots)
 
 ## About
 
