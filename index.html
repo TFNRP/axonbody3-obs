@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+    integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"
+    integrity="sha512-6+YN/9o9BWrk6wSfGxQGpt3EUK6XeHi6yeHV+TYD2GR0Sj/cggRpXr1BrAQf0as6XslxomMUxXp2vIl+fv0QRA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link href="./style.css" rel="stylesheet">
+  <script src='./config.js'></script>
+  <script>
+    var player = new Howl({ src: ["./beep.wav"] }),
+        serial = '6039';
+
+    if (config.CustomCameraId && config.CustomCameraId !== '') {
+      serial = config.CustomCameraId
+    } else {
+      const keys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      for (var i = 0; i < 4; i++) {
+        serial += keys.charAt(Math.floor(Math.random() * (keys.length)));
+      }
+    }
+
+    setInterval(() => {
+      const now = new Date();
+      let offset = typeof config.ForceUTCTimeZoneOffset == 'number' ?
+        config.ForceUTCTimeZoneOffset :
+        now.getTimezoneOffset() / -60;
+      now.setTime(now.getTime() + offset * 60);
+      if (
+        config.CalculateDaylightSavingsTime &&
+        new Date().getTimezoneOffset() <
+        Math.max(
+          new Date(now.getFullYear(), 0, 1).getTimezoneOffset(),
+          new Date(now.getFullYear(), 6, 1).getTimezoneOffset()
+        )
+      ) offset += 1;
+      const iso = new Date(now.getTime() + (offset * 36e5)).toISOString();
+      $("#date").text(`${iso.substring(0, 10)} ${iso.substring(11, 19)} ${offset < 0 ? '-' : '+'}${Math.abs(offset).toString().padEnd(3, '0').padStart(4, '0')}`);
+    }, 1e3)
+    
+    setInterval(() => {
+      player.volume(config.BeepVolume / 100);
+      player.play();
+    }, 12e4)
+    
+    $(() => {
+      $("#text").text("AXON BODY 3 X" + serial);
+    })
+  </script>
+</head>
+
+<body>
+  <div id="ui">
+    <p id="date">1337-42-00 00:00:00 +0000</p>
+    <p id="text">AXON BODY 3 X60390000</p>
+    <img id="logo" src="./logo.png" alt="Logo">
+    <svg>
+      <rect />
+    </svg>
+  </div>
+</body>
+
+</html>
